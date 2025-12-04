@@ -135,7 +135,7 @@ def run_analysis(ticker_input: str):
         RESTRICTION: You must include the company name "{company_name}" in EVERY search query.
         Do not search for generic terms like "industry sector".
 
-        Search Examples:
+        Search Examples (feel free to ask questions beyond these examples, but ALWAYS include the company name):
         - "{company_name} regulatory risks 2025"
         - "Interest rate impact 2025 relevant to sector of {company_name}" (NOT just "interest rates")
         - "{company_name} customer demand trends"
@@ -216,6 +216,8 @@ def run_analysis(ticker_input: str):
         - Recommendation (Buy/Sell/Hold)
         - Conviction Score (0-10)
         - Kill Switch Price
+
+        Do not give any explanations beyond the final memo or ask for more information.
         """,
         expected_output="Final Investment Memo.",
         agent=chief_investment_officer,

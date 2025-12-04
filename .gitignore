@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment variables
+.env
+
+# Downloads
+downloads/
+data/
+
+# CrewAI / Chroma / Vector DBs
+.chroma/
+db/
+*.db
+
+# OS
+.DS_Store

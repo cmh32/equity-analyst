@@ -1,0 +1,12 @@
+crewai
+crewai_tools
+qdrant-client==1.15.1
+langchain_community
+beautifulsoup4
+markdownify
+pymupdf4llm
+pandas
+yfinance
+requests
+python-dotenv
+tabulate

@@ -9,47 +9,34 @@ import pymupdf4llm
 from io import StringIO
 from .config import SEC_HEADERS, get_api_key
 
-def clean_sec_html(html_content):
+def clean_sec_html(html_content, ticker="temp"):
     """
-    Parses SEC HTML, converts tables to Markdown using Pandas,
-    and cleans the rest of the text.
+    Parses SEC HTML using pymupdf4llm for improved layout analysis.
     """
-    print("   🧹 Cleaning SEC HTML with Pandas Table Extraction...")
-    soup = BeautifulSoup(html_content, 'html.parser')
+    print("   🧹 Cleaning SEC HTML with PyMuPDF4LLM...")
+    
+    temp_html = f"downloads/{ticker}_temp_filing.html"
+    if not os.path.exists("downloads"): os.makedirs("downloads")
+    
+    try:
+        # Write bytes to temp file
+        with open(temp_html, 'wb') as f:
+            f.write(html_content)
+            
+        # Convert to Markdown
+        md_text = pymupdf4llm.to_markdown(temp_html)
+        
+        # Cleanup
+        if os.path.exists(temp_html):
+            os.remove(temp_html)
+            
+        return md_text
 
-    # 1. Remove XBRL and junk tags
-    for tag in soup(['script', 'style', 'ix:header', 'xml', 'head', 'object']):
-        tag.decompose()
-
-    # 2. INTELLIGENT TABLE PARSING
-    tables = soup.find_all('table')
-
-    for table in tables:
-        try:
-            # Wrap in StringIO to avoid Pandas depreciation warning
-            dfs = pd.read_html(StringIO(str(table)))
-            if not dfs: continue
-
-            df = dfs[0]
-
-            # Drop empty spacer rows/cols
-            df = df.dropna(axis=1, how='all').dropna(axis=0, how='all')
-
-            # Convert to Markdown Pipe Table
-            # (Requires 'tabulate' installed)
-            md_table = df.to_markdown(index=False)
-
-            # Swap HTML table with Markdown Table
-            new_node = soup.new_tag("p")
-            new_node.string = f"\n\n{md_table}\n\n"
-            table.replace_with(new_node)
-
-        except Exception:
-            # Fallback: leave table for markdownify
-            continue
-
-    # 3. Final Text Pass
-    return md(str(soup), heading_style="ATX", strip=['a', 'img'])
+    except Exception as e:
+        print(f"   ❌ Error parsing HTML with PyMuPDF: {e}")
+        if os.path.exists(temp_html):
+            os.remove(temp_html)
+        return ""
 
 def download_from_sec(ticker):
     print(f"\n🏛️  Checking SEC Database for {ticker}...")
@@ -95,7 +82,7 @@ def download_from_sec(ticker):
                 md_text = pymupdf4llm.to_markdown(temp_pdf)
                 os.remove(temp_pdf)
             else:
-                md_text = clean_sec_html(r.content)
+                md_text = clean_sec_html(r.content, ticker)
 
             filename = f"downloads/{ticker}_10k.md"
             with open(filename, "w", encoding="utf-8") as f:

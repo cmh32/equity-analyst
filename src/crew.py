@@ -154,6 +154,7 @@ def run_analysis(ticker_input: str):
 
     quant_task = Task(
         description=f"""
+        CRITICAL: You MUST use the provided tools. Do not skip this step.
         1. Fetch the latest financial metrics for {ticker_input} using 'Get Financial Metrics'.
         2. Fetch the historical financial statements using 'Get Historical Financials'.
 
@@ -175,7 +176,7 @@ def run_analysis(ticker_input: str):
 
     fundamental_strategy_task = Task(
         description=f"""
-        Conduct a comprehensive macro analysis for {company_name} ({ticker_input}) using the PESTLE framework.
+        Conduct a strategic analysis for {company_name} ({ticker_input}) based on 10-K filings.
         1. Search the MDX for 'Risk Factors' and 'Competition'.
         2. Compare the 'Gross Margins' and 'Profit Margins' from the Quant data against the qualitative risks.
             - Example: If Margins are dropping (Quant), finds the reason in the text (Qual).

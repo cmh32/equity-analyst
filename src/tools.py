@@ -214,10 +214,10 @@ class HistoricalPriceActionTool(BaseTool):
 
             # Resample to Monthly to save tokens (End of Month)
             # We get the last price of the month, and the Max High / Min Low of that month
-            monthly_df = hist['Close'].resample('M').last().to_frame(name="Close")
-            monthly_df['High'] = hist['High'].resample('M').max()
-            monthly_df['Low'] = hist['Low'].resample('M').min()
-            monthly_df['Volume'] = hist['Volume'].resample('M').sum()
+            monthly_df = hist['Close'].resample('ME').last().to_frame(name="Close")
+            monthly_df['High'] = hist['High'].resample('ME').max()
+            monthly_df['Low'] = hist['Low'].resample('ME').min()
+            monthly_df['Volume'] = hist['Volume'].resample('ME').sum()
 
             # Calculate Monthly Return
             monthly_df['MoM % Change'] = monthly_df['Close'].pct_change() * 100

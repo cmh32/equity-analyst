@@ -238,6 +238,7 @@ def run_analysis(ticker_input: str):
         - Recommendation (Buy/Sell/Hold)
         - Conviction Score (0-10)
         - Kill Switch Price
+        - One-paragraph summary and detailed bullet points from each analyst.
 
         Do not give any explanations beyond the final memo or ask for more information.
         """,

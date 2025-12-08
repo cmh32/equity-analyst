@@ -36,9 +36,35 @@ def analyze_stock(request: AnalysisRequest):
         # Extract individual task outputs
         details = {}
         if hasattr(crew_output, 'tasks_output'):
-            for task_out in crew_output.tasks_output:
-                # Use the agent's role as the key, or fall back to description/summary
-                key = task_out.agent if task_out.agent else "Unknown Agent"
+            for i, task_out in enumerate(crew_output.tasks_output):
+                # 1. Try to get the agent name directly
+                agent_name = None
+                if hasattr(task_out, 'agent') and task_out.agent:
+                    agent_name = str(task_out.agent)
+                
+                # 2. Fallback: Infer agent from task description
+                if not agent_name:
+                    desc = getattr(task_out, 'description', "").lower()
+                    if "macro" in desc:
+                        agent_name = "Macro & Sentiment Analyst"
+                    elif "financial metrics" in desc or "revenue cagr" in desc:
+                        agent_name = "Quantitative Analyst"
+                    elif "strategic analysis" in desc or "risk factors" in desc:
+                        agent_name = "Fundamental Strategist"
+                    elif "technical analysis" in desc:
+                        agent_name = "Technical Analyst"
+                    elif "synthesize" in desc or "investment memo" in desc:
+                        agent_name = "Chief Investment Officer"
+                    else:
+                        agent_name = f"Agent {i+1}"
+
+                # 3. Handle Duplicate Keys (e.g. if multiple tasks map to same agent)
+                key = agent_name
+                counter = 1
+                while key in details:
+                    key = f"{agent_name} ({counter})"
+                    counter += 1
+
                 details[key] = task_out.raw
 
         return {

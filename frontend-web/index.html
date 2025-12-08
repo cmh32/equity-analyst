@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Equity Analyst</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>AI Equity Analyst</h1>
+            <p>Institutional-grade investment research powered by AI agents.</p>
+        </header>
+
+        <section class="search-section">
+            <input type="text" id="tickerInput" placeholder="Enter Stock Ticker (e.g. AAPL)" autocomplete="off">
+            <button id="analyzeBtn" onclick="analyzeStock()">Analyze</button>
+        </section>
+
+        <div id="loading" class="hidden">
+            <div class="spinner"></div>
+            <p>Agents are researching... this may take 1-2 minutes.</p>
+        </div>
+
+        <div id="error" class="hidden"></div>
+
+        <main id="results" class="hidden">
+            <div class="layout">
+                <aside class="sidebar">
+                    <h3>Reports</h3>
+                    <ul id="agentList">
+                        <!-- List items will be injected here -->
+                    </ul>
+                </aside>
+                
+                <section class="content-area">
+                    <div class="report-header">
+                        <h2 id="reportTitle">Final Investment Memo</h2>
+                        <span id="tickerTag"></span>
+                    </div>
+                    <div id="reportContent" class="markdown-body">
+                        <!-- Content goes here -->
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

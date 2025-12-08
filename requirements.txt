@@ -10,3 +10,5 @@ yfinance
 requests
 python-dotenv
 tabulate
+fastapi
+uvicorn

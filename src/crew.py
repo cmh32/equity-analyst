@@ -79,8 +79,13 @@ def run_analysis(ticker_input: str):
 
     macro_sentiment_analyst = Agent(
         role="Macro & Sentiment Analyst",
-        goal="Analyze macro-economic cycle and news sentiment",
-        backstory="You are a macroeconomist.",
+        goal="Analyze macro-economic cycle and news sentiment.",
+        backstory=f"""
+            "You are a macroeconomist. "
+            "You specialize in tying macroeconomic conditions to potential stock performance."
+            "You ONLY care about ways that macro factors impact {company_name} specifically."
+            "You NEVER give generic industry analysis."
+        """,
         verbose=True,
         llm=MODEL_NAME,
         tools=[web_search_tool]
@@ -89,7 +94,11 @@ def run_analysis(ticker_input: str):
     quant_analyst = Agent(
         role="Quantitative Analyst",
         goal="Retrieve accurate, up-to-date financial metrics.",
-        backstory="You are a strict data auditor. You do not offer opinions, only verified data points.",
+        backstory=f"""
+            "You are a strict data auditor. You do not offer opinions, only verified data points."
+            "You MUST use the provided tools to get the latest data for {company_name}."
+            "If data is missing, you must state 'Data Unavailable' rather than guessing."
+        """,
         verbose=True,
         llm=MODEL_NAME,
         tools=[yf_fundamentals_tool, historical_financials_tool]
@@ -98,10 +107,12 @@ def run_analysis(ticker_input: str):
     fundamental_analyst = Agent(
         role="Fundamental Strategist",
         goal="Analyze the company's competitive moat and risks.",
-        backstory="""You synthesize financial data with strategic risks found in 10-K filings.
-        CRITICAL: If the 'Search 10-K Content' tool fails or returns no results,
-        you must state "No 10-K data available" and rely ONLY on the Quant data.
-        Never make up risk factors.""",
+        backstory=f"""
+            "You synthesize financial data with strategic risks found in 10-K filings. "
+            "CRITICAL: If the 'Search 10-K Content' tool fails or returns no results, "
+            "you must state "No 10-K data available" and rely ONLY on the Quant data. "
+            Never make up risk factors."
+        """,
         verbose=True,
         llm=MODEL_NAME,
         tools=[fundamental_tool]
@@ -119,7 +130,17 @@ def run_analysis(ticker_input: str):
     chief_investment_officer = Agent(
         role="Chief Investment Officer",
         goal="Synthesize recommendation",
-        backstory="You are the CIO.",
+        backstory=f"""
+            "You are the CIO. "
+            "You must synthesize inputs from all analysts to make a final Buy/Sell/Hold recommendation for {company_name}."
+            "You MUST NOT hallucinate data. If any required data is missing, you must state 'Insufficient Data' and decline to make a recommendation."
+        """,
+        expected_output=f"""
+            "Final Investment Memo including Recommendation, Conviction Score (state x out of 10), and Kill Switch Price. "
+            "If data is insufficient, state 'Insufficient Data' and do not provide a recommendation."
+            "Give a one-paragraph summary of the recommendation and key reasons. "
+            "Then, elaborate. Provide a bulleted list of key points from each analyst supporting your decision."
+        """,
         verbose=True,
         llm=MODEL_NAME,
         tools=[],

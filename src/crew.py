@@ -133,12 +133,13 @@ def run_analysis(ticker_input: str):
         backstory=f"""
             "You are the CIO. "
             "You must synthesize inputs from all analysts to make a final Buy/Sell/Hold recommendation for {company_name}."
-            "You MUST NOT hallucinate data. If any required data is missing, you must state 'Insufficient Data' and decline to make a recommendation."
+            "You MUST NOT hallucinate data. If any required data is missing, SAY SO. "
+            "You can make a recommendation with the caveat that data is missing."
         """,
         expected_output=f"""
             "Final Investment Memo including Recommendation, Conviction Score (state x out of 10), and Kill Switch Price. "
             "If data is insufficient, state 'Insufficient Data' and do not provide a recommendation."
-            "Give a one-paragraph summary of the recommendation and key reasons. "
+            "Give an executive summary of the recommendation and key reasons. "
             "Then, elaborate. Provide a bulleted list of key points from each analyst supporting your decision."
         """,
         verbose=True,
@@ -237,7 +238,10 @@ def run_analysis(ticker_input: str):
         Determine:
         - Recommendation (Buy/Sell/Hold)
         - Conviction Score (0-10)
-        - Kill Switch Price
+        - Kill Switch Price:
+            * Use the "Primary Support" or "Stop Loss" level provided by the Technical Analyst.
+            * If not explicitly labeled, calculate it as 5% below the current price. BE CLEAR THAT YOU HAVE DONE THIS.
+            * Do NOT state "Insufficient Data" for this field, BUT CAVEAT IF YOU HAVE CALCULATED AS 5% BELOW
         - One-paragraph summary and detailed bullet points from each analyst.
 
         Do not give any explanations beyond the final memo or ask for more information.
@@ -247,12 +251,11 @@ def run_analysis(ticker_input: str):
         context=[macro_task, quant_task, fundamental_strategy_task, technical_task]
     )
 
-    # Async execution configuration
-    macro_task.async_execution = True
-    quant_task.async_execution = True
-    technical_task.async_execution = True
-    
-    # Dependent tasks
+    # Async execution disabled to ensure all task outputs are captured correctly
+    # (CrewAI has a known bug with async task output collection - see GitHub issue #1998)
+    macro_task.async_execution = False
+    quant_task.async_execution = False
+    technical_task.async_execution = False
     fundamental_strategy_task.async_execution = False
     recommendation_task.async_execution = False
 

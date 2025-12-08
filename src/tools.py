@@ -235,10 +235,17 @@ class HistoricalPriceActionTool(BaseTool):
             return f"Error fetching price history: {e}"
 
 
+from pydantic import BaseModel, Field
+from typing import Type, Any
+
+class CustomMDXToolInput(BaseModel):
+    query: Any = Field(description="The specific search query string for the 10-K report.")
+
 class CustomMDXTool(BaseTool):
     name: str = "Search 10-K Content"
     description: str = "Search the 10-K report. Useful for risk factors, management discussion, and qualitative analysis. Input must be a specific search query string."
     mdx_tool: object = None
+    args_schema: Type[BaseModel] = CustomMDXToolInput
 
     # FIX: Use **kwargs so it accepts 'mdx' and 'config' from your main block
     def __init__(self, **kwargs):

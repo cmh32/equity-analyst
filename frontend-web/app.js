@@ -75,6 +75,7 @@ function showReport(title, content, activeElement) {
 
     // Render content
     document.getElementById('reportTitle').textContent = title;
-    // Use marked library to parse Markdown
-    document.getElementById('reportContent').innerHTML = marked.parse(content);
+    // Escape tildes to prevent strikethrough rendering, then parse Markdown
+    const sanitizedContent = content.replace(/~~/g, '\\~\\~');
+    document.getElementById('reportContent').innerHTML = marked.parse(sanitizedContent);
 }

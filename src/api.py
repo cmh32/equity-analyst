@@ -28,20 +28,22 @@ def analyze_stock(request: AnalysisRequest):
     ticker = request.ticker.strip().upper()
     if not ticker:
         raise HTTPException(status_code=400, detail="Ticker symbol is required")
-    
+
     try:
         # run_analysis returns a CrewOutput object
         crew_output = run_analysis(ticker)
-        
+
         # Extract individual task outputs
         details = {}
         if hasattr(crew_output, 'tasks_output'):
+            print(f"DEBUG: Found {len(crew_output.tasks_output)} task outputs")
             for i, task_out in enumerate(crew_output.tasks_output):
+                print(f"DEBUG Task {i}: agent='{getattr(task_out, 'agent', 'N/A')}', raw_len={len(str(getattr(task_out, 'raw', '') or ''))}")
                 # 1. Try to get the agent name directly
                 agent_name = None
                 if hasattr(task_out, 'agent') and task_out.agent:
                     agent_name = str(task_out.agent)
-                
+
                 # 2. Fallback: Infer agent from task description
                 if not agent_name:
                     desc = getattr(task_out, 'description', "").lower()
@@ -65,7 +67,21 @@ def analyze_stock(request: AnalysisRequest):
                     key = f"{agent_name} ({counter})"
                     counter += 1
 
-                details[key] = task_out.raw
+                # 4. Extract task output with fallbacks so every agent surfaces in the UI
+                report_content = (
+                    getattr(task_out, "raw", None)
+                    or getattr(task_out, "summary", None)
+                    or getattr(task_out, "result", None)
+                    or getattr(task_out, "output", None)
+                    or getattr(task_out, "value", None)
+                )
+                # Debug: print all available attributes if no content found
+                if not report_content:
+                    print(f"DEBUG: No content for {agent_name}. Available attrs: {[a for a in dir(task_out) if not a.startswith('_')]}")
+                    print(f"DEBUG: task_out.__dict__ = {getattr(task_out, '__dict__', {})}")
+                    report_content = f"No output returned by {agent_name}."
+
+                details[key] = report_content
 
         return {
             "ticker": ticker,

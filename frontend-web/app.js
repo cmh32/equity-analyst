@@ -56,6 +56,7 @@ function renderDashboard(data) {
     // 2. Add other agents
     if (data.details) {
         for (const [agentName, reportContent] of Object.entries(data.details)) {
+            if (agentName === 'Chief Investment Officer') continue;
             const item = document.createElement('li');
             item.textContent = agentName;
             item.onclick = () => showReport(agentName, reportContent, item);

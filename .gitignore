@@ -17,3 +17,15 @@ db/
 
 # OS
 .DS_Store
+
+# Logs and output files
+*.log
+*.err
+*.out
+run_log.txt
+output_*.txt
+analysis_output.txt
+analysis_error.txt
+
+# Editor/tool artifacts
+.gemini-clipboard/

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Equity Analyst</title>
+    <title>Mosaic AI - The World's Greatest Equity Analyst</title>
     <link rel="stylesheet" href="style.css?v=1.0">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -23,23 +23,28 @@
 
         <div id="loading" class="hidden">
             <div class="spinner"></div>
-            <p>Agents are researching... this may take 1-2 minutes.</p>
+            <p>Agents are researching. This is a robust process and will take several minutes.</p>
         </div>
 
         <div id="error" class="hidden"></div>
 
         <main id="results" class="hidden">
+            <!-- Summary Card -->
+            <div id="summaryCard" class="summary-card hidden">
+                <!-- Metrics injected by JS -->
+            </div>
+
             <div class="layout">
                 <aside class="sidebar">
-                    <h3>Reports</h3>
+                    <h3>Sections</h3>
                     <ul id="agentList">
-                        <!-- List items will be injected here -->
+                        <!-- Section items will be injected here -->
                     </ul>
                 </aside>
-                
+
                 <section class="content-area">
                     <div class="report-header">
-                        <h2 id="reportTitle">Final Investment Memo</h2>
+                        <h2 id="reportTitle">Investment Memo</h2>
                         <span id="tickerTag"></span>
                     </div>
                     <div id="reportContent" class="markdown-body">

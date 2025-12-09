@@ -113,16 +113,67 @@ button:hover {
 #results {
     flex: 1;
     display: flex;
-    overflow: hidden; /* For inner scrolling */
+    flex-direction: column;
+    overflow: hidden;
     background-color: var(--card-bg);
     border-radius: 12px;
     border: 1px solid var(--border);
 }
 
+/* Summary Card */
+.summary-card {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    padding: 1.25rem 2rem;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border-bottom: 1px solid var(--border);
+}
+
+.metric {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.metric-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+}
+
+.metric-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.metric-unit {
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+}
+
+/* Position colors */
+.position-buy {
+    color: var(--success);
+}
+
+.position-sell {
+    color: #ef4444;
+}
+
+.position-hold {
+    color: #f59e0b;
+}
+
 .layout {
     display: flex;
     width: 100%;
-    height: 600px; /* Fixed height for dashboard feel */
+    flex: 1;
+    min-height: 0; /* Allow flex children to shrink */
 }
 
 .sidebar {
@@ -162,6 +213,22 @@ button:hover {
 .sidebar li.active {
     background-color: var(--accent);
     color: white;
+}
+
+.sidebar li.divider {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    padding: 1rem 1rem 0.5rem;
+    margin-top: 0.5rem;
+    cursor: default;
+    border-top: 1px solid var(--border);
+}
+
+.sidebar li.divider:hover {
+    background-color: transparent;
+    color: var(--text-secondary);
 }
 
 .content-area {

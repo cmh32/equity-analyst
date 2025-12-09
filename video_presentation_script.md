@@ -8,17 +8,18 @@
 ## 0:00 - 1:00 | Introduction & The Problem
 **(Visual: Title Slide / Face Camera)**
 
-"Hi, I'm Colin Hughes. For my final project, I built an **Equity Analyst Agent System**.
+"Hi, I'm Colin Hughes [Roldand intro]. For our final project, we built an **Equity Analyst Agent System**.
 
-The problem I wanted to solve is that traditional financial research is incredibly labor-intensive. You have to read 10-Ks, check current stock prices, analyze macro trends, and crunch numbers.
+The problem we wanted to solve is that traditional financial research is incredibly labor-intensive. You have to read 10-Ks, check current stock prices, analyze macro trends, and crunch numbers.
 
-If you ask a standard LLM like ChatGPT to 'Analyze Apple,' it usually gives you a generic summary or, worse, hallucinates financial figures. It lacks rigor.
+If you ask a standard LLM like ChatGPT to 'Analyze Apple,' it usually gives you a generic summary or, worse, hallucinates financial figures. It lacks rigor. Plus, even if you can "prompt engineer" an advanced reasoning model to give you a good output, it will 
+be difficult to replicate for users on a replicable basis. There isn't enough structure.
 
 **(Visual: Split screen showing a generic LLM response vs. Your App's architecture diagram)**
 
-My solution wasn't to build a better chatbot, but to build an **AI Workforce**. I created a **Manager-Agent Architecture**.
+Our solution was to build an **AI Workforce** that mimics an entire team. I created a **Manager-Agent Architecture**.
 
-Instead of one model doing everything, I have specialized agents—a Macro Economist, a Quant, and a Technical Analyst. But the key innovation here is the **Manager Agent**. This agent doesn't generate content; it *critiques* it. It acts as a quality gatekeeper, sending work back for revision if it doesn't meet professional standards. This ensures the final output is grounded, accurate, and useful."
+Instead of one model doing everything, I have specialized agents—a Macro Economist, a Quant, a Technical Analyst, and a Fundamental Analyst. But the key innovation here is the **Manager Agent**. This agent doesn't generate content; it *critiques* it. It acts as a quality gatekeeper, sending work back for revision if it doesn't meet professional standards. This ensures the final output is grounded, accurate, and useful."
 
 ---
 
@@ -32,6 +33,7 @@ Instead of one model doing everything, I have specialized agents—a Macro Econo
     *   The **Macro Agent** is searching the web for PESTLE factors like 'AI chip export bans.'
     *   The **Quant Agent** is hitting the Yahoo Finance API for real data—no hallucinations allowed here.
     *   The **Technical Agent** is calculating RSI and Moving Averages.
+    *   The **Fundamental Strategic Agent** takes the outpu tfrom the quant agent and uses RAG to analyze the 10-k for additional analysis
 
 **(Visual: Zoom in on the terminal/log output showing the "Manager Reviewing" step)**
 
@@ -41,7 +43,7 @@ Instead of one model doing everything, I have specialized agents—a Macro Econo
 
 4.  **Final Output:** Once the Manager approves all specific reports, the **CIO Agent** synthesizes everything into this final Investment Memo. It gives a specific Recommendation, a Conviction Score, and a Kill Switch price.
 
-5.  **RAG Chat:** Finally, down here, I can chat with the report. I can ask, 'Why is the conviction score only a 7?' The system uses RAG to retrieve the specific section from the generated report to answer me."
+5.  **RAG Chat:** Finally, down here, I can chat with the report. I can ask, 'Why is the conviction score only a 7?' The system uses RAG to retrieve the specific section from the generated report to answer me." RAG ensures better accuracy and helps saves tokens.
 
 ---
 
@@ -67,7 +69,7 @@ If the check fails, the `critique_agent_output` function returns `approved: Fals
 **(Visual: Open `src/chat_service.py`)**
 
 **3. RAG Implementation (`chat_service.py`):**
-For the chat feature, I'm using `ChromaDB`. When an analysis is finished, I chunk the text—separating the CIO memo from the detailed agent reports—and embed them. This allows the user to query the *specific* data generated during the session, rather than general knowledge."
+For the chat feature, I'm using `ChromaDB` for embeddings. When an analysis is finished, I chunk the text—separating the CIO memo from the detailed agent reports—and embed them. This allows the user to query the *specific* data generated during the session, rather than general knowledge."
 
 ---
 
@@ -79,7 +81,7 @@ For the chat feature, I'm using `ChromaDB`. When an analysis is finished, I chun
 1.  **Sophisticated Agent Workflows:** The Manager-Critique loop goes beyond standard chains to create self-correcting agents.
 2.  **Search Augmented Retrieval (RAG):** Used for the interactive Q&A on the report.
 3.  **Web Application:** It's a fully hosted FastAPI app, not a notebook.
-4.  **Multiple Data Sources:** It combines LLM reasoning with real-time Web Search (Serper), Financial APIs (YFinance), and SEC data.
+4.  **Multiple Data Sources:** It combines LLM reasoning with real-time Web Search (Serper), Financial APIs (YFinance), and SEC data.   Without these data sources, the tool would effecitvely need to make up information.
 5.  **Conversational Chat:** Providing an interactive layer on top of the static report.
 
 **Utility:**

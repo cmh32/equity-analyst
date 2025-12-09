@@ -1,4 +1,5 @@
-# AI Investment Firm (Equity Analyst)
+# Mosaic AI
+The World's Greatest Team of Equity Analysts
 
 An automated equity analysis tool powered by a multi-agent AI system. This project utilizes **CrewAI** to orchestrate a team of specialized AI agents that conduct comprehensive investment research, from macro-economic analysis to technical charting and fundamental 10-K reviews.
 
@@ -7,7 +8,7 @@ An automated equity analysis tool powered by a multi-agent AI system. This proje
 *   **Multi-Agent Architecture:** Orchestrates 5 specialized agents:
     *   **Macro & Sentiment Analyst:** Conducts PESTLE analysis and news sentiment checks via web search.
     *   **Quantitative Analyst:** Audits financial metrics, margins, and growth trends using `yfinance`.
-    *   **Fundamental Strategist:** Analyzes SEC 10-K filings for qualitative risks and competitive advantages.
+    *   **Fundamental Analyst:** Uses RAG to analyze SEC 10-K filings for qualitative risks and competitive advantages.
     *   **Technical Analyst:** Evaluates price action, volatility, and technical indicators (RSI, SMA).
     *   **Chief Investment Officer:** Synthesizes all findings into a final "Investment Memo" with a Buy/Sell/Hold recommendation.
 *   **Automated Data Pipeline:**

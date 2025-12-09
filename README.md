@@ -58,6 +58,14 @@ python main.py
 # Enter the stock ticker (e.g., TSLA): NVDA
 ```
 
+**Web Interface:**
+To use the web-based dashboard and chat:
+1.  Start the API server:
+    ```bash
+    uvicorn src.api:app --reload
+    ```
+2.  Open `frontend-web/index.html` in your browser.
+
 ## 📂 Project Structure
 
 *   `main.py`: Entry point of the application. Handles CLI args and kicks off the Crew.

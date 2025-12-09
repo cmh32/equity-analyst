@@ -5,6 +5,7 @@ from typing import List, Optional
 from src.managed_crew import run_managed_analysis
 from src.chat_service import chat_service
 from src.mock_data import get_mock_analysis
+from src.tools import validate_ticker
 import uvicorn
 import os
 
@@ -55,6 +56,9 @@ def analyze_stock(request: AnalysisRequest):
     ticker = request.ticker.strip().upper()
     if not ticker:
         raise HTTPException(status_code=400, detail="Ticker symbol is required")
+
+    if not validate_ticker(ticker):
+        raise HTTPException(status_code=400, detail=f"Invalid ticker symbol: {ticker}. Please check and try again. Please enter the symbol, not the full company name.")
 
     try:
         result = run_managed_analysis(ticker)

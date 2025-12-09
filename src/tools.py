@@ -1,4 +1,6 @@
 import json
+import re
+import os
 import requests
 import yfinance as yf
 from crewai.tools import BaseTool
@@ -272,3 +274,43 @@ class CustomMDXTool(BaseTool):
             return self.mdx_tool.run(cleaned_query)
         except Exception as e:
             return f"Error querying document: {str(e)}"
+
+def validate_ticker(ticker: str) -> bool:
+    """
+    Validates if a ticker exists by:
+    1. Regex format check (prevents injection/garbage).
+    2. Checking local 'data/tickers.json' whitelist (fast).
+    3. Fallback to yfinance historical fetch (slow, for indices/crypto).
+    """
+    ticker = str(ticker).strip().upper()
+
+    # 1. Strict Regex Check
+    # Allows: A-Z, 0-9, -, ., =, ^ (Indices)
+    # Blocks: ; (SQL/Command injection attempts), spaces, quotes
+    if not re.match(r"^[A-Z0-9\-\.\=\^]+$", ticker):
+        return False
+        
+    if len(ticker) > 20:
+        return False
+
+    # 2. Check Local Whitelist (Fast)
+    try:
+        # Assume running from project root
+        whitelist_path = os.path.join(os.getcwd(), 'data', 'tickers.json')
+        if os.path.exists(whitelist_path):
+            with open(whitelist_path, 'r') as f:
+                valid_tickers = set(json.load(f))
+                if ticker in valid_tickers:
+                    return True
+    except Exception:
+        # If file read fails, ignore and fall through to yfinance
+        pass
+
+    # 3. Fallback: Check YFinance (Slow)
+    try:
+        stock = yf.Ticker(ticker)
+        # Fetch 1 day of history. If empty, it's likely invalid or delisted.
+        hist = stock.history(period="1d")
+        return not hist.empty
+    except Exception:
+        return False

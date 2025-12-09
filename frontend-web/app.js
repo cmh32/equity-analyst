@@ -108,7 +108,16 @@ async function analyzeStock() {
             });
 
             if (!response.ok) {
-                throw new Error(`Server Error: ${response.statusText}`);
+                let errorMessage = `Server Error: ${response.statusText}`;
+                try {
+                    const errorData = await response.json();
+                    if (errorData.detail) {
+                        errorMessage = errorData.detail;
+                    }
+                } catch (e) {
+                    // If response is not JSON, fall back to statusText
+                }
+                throw new Error(errorMessage);
             }
 
             data = await response.json();
@@ -298,7 +307,15 @@ function showReport(title, content, activeElement) {
     document.getElementById('reportTitle').textContent = title;
     // Remove ~~ markers entirely to prevent strikethrough rendering
     const sanitizedContent = content.replace(/~~/g, '');
-    document.getElementById('reportContent').innerHTML = marked.parse(sanitizedContent);
+    
+    const reportContent = document.getElementById('reportContent');
+    if (typeof marked !== 'undefined' && marked.parse) {
+        reportContent.innerHTML = marked.parse(sanitizedContent);
+    } else {
+        // Fallback if marked is not loaded
+        reportContent.textContent = sanitizedContent;
+        console.warn('Marked.js not loaded, falling back to plain text');
+    }
 
     // Show chat section
     const chatSection = document.getElementById('chatSection');
@@ -351,6 +368,7 @@ async function sendChatMessage() {
             chatHistory.push({ role: 'assistant', content: data.response });
         }
     } catch (err) {
+        console.error("Chat Error:", err);
         appendChatMessage('assistant', `Error: ${err.message}`);
     } finally {
         sendBtn.disabled = false;
@@ -372,7 +390,12 @@ function appendChatMessage(role, content) {
 
     const contentDiv = document.createElement('div');
     contentDiv.className = 'chat-content';
-    contentDiv.innerHTML = marked.parse(content);
+    
+    if (typeof marked !== 'undefined' && marked.parse) {
+        contentDiv.innerHTML = marked.parse(content);
+    } else {
+        contentDiv.textContent = content;
+    }
 
     messageDiv.appendChild(labelSpan);
     messageDiv.appendChild(contentDiv);

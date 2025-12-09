@@ -12,3 +12,6 @@ python-dotenv
 tabulate
 fastapi
 uvicorn
+openai
+chromadb
+tiktoken

@@ -3,6 +3,7 @@ import json
 from datetime import datetime
 from src.managed_crew import run_managed_analysis
 from src.chat_service import chat_service
+from src.tools import validate_ticker
 
 def main():
     print("### Welcome to the AI Investment Firm (Managed Mode) ###")
@@ -15,6 +16,12 @@ def main():
     if not ticker_input:
         print("Defaulting to TSLA")
         ticker_input = "TSLA"
+
+    print(f"Validating ticker '{ticker_input}'...")
+    if not validate_ticker(ticker_input):
+        print(f"❌ Error: Ticker '{ticker_input}' is invalid or could not be found. Please check the symbol and try again.")
+        sys.exit(1)
+    print(f"✅ Ticker '{ticker_input}' confirmed.")
 
     try:
         result = run_managed_analysis(ticker_input)

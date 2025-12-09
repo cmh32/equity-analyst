@@ -160,14 +160,16 @@ CONTEXT:
         messages.append({"role": "user", "content": question})
 
         # Get response from LLM
-        response = self.client.chat.completions.create(
-            model=MODEL_NAME,
-            messages=messages,
-            # temperature=0.3,  # Not supported by some models (e.g. o1)
-            max_completion_tokens=1000
-        )
-
-        return response.choices[0].message.content
+        try:
+            response = self.client.chat.completions.create(
+                model=MODEL_NAME,
+                messages=messages,
+                max_completion_tokens=4000
+            )
+            return response.choices[0].message.content
+        except Exception as e:
+            print(f"DEBUG ERROR: {type(e).__name__}: {e}")
+            return f"Error getting response: {e}"
 
     def _split_into_sections(self, text: str, source: str) -> list:
         """Split CIO memo into sections based on headers."""

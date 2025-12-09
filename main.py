@@ -2,6 +2,7 @@ import sys
 import json
 from datetime import datetime
 from src.managed_crew import run_managed_analysis
+from src.chat_service import chat_service
 
 def main():
     print("### Welcome to the AI Investment Firm (Managed Mode) ###")
@@ -69,6 +70,30 @@ def main():
                     f.write("\n")
 
         print(f"\n✅ Full output saved to: {output_file}")
+
+        # Index for RAG chat
+        print("\n📚 Indexing analysis for chat...")
+        chat_service.index_analysis(ticker_input, result)
+
+        # Interactive chat loop
+        print("\n" + "=" * 50)
+        print("💬 CHAT MODE - Ask questions about the analysis")
+        print("   Type 'quit' or 'exit' to end")
+        print("=" * 50 + "\n")
+
+        chat_history = []
+        while True:
+            question = input("You: ").strip()
+            if not question:
+                continue
+            if question.lower() in ['quit', 'exit', 'q']:
+                print("Goodbye!")
+                break
+
+            chat_history.append({"role": "user", "content": question})
+            response = chat_service.chat(ticker_input, question, chat_history)
+            print(f"\nAI: {response}\n")
+            chat_history.append({"role": "assistant", "content": response})
 
     except Exception as e:
         print(f"An error occurred: {e}")

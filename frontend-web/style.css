@@ -292,3 +292,89 @@ button:hover {
     border-radius: 8px;
     margin-bottom: 1rem;
 }
+
+/* Chat Section */
+.chat-section {
+    margin-top: 2rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1.5rem;
+}
+
+.chat-header h3 {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.chat-messages {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background-color: #162032;
+    border-radius: 8px;
+    min-height: 100px;
+}
+
+.chat-message {
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+}
+
+.chat-message.user {
+    background-color: rgba(59, 130, 246, 0.2);
+    margin-left: 2rem;
+}
+
+.chat-message.assistant {
+    background-color: rgba(16, 185, 129, 0.1);
+    margin-right: 2rem;
+}
+
+.chat-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.chat-message.user .chat-label {
+    color: var(--accent);
+}
+
+.chat-message.assistant .chat-label {
+    color: var(--success);
+}
+
+.chat-content {
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.chat-content p {
+    margin-bottom: 0.5rem;
+}
+
+.chat-content p:last-child {
+    margin-bottom: 0;
+}
+
+.chat-input-area {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.chat-input-area input {
+    flex: 1;
+    font-size: 0.95rem;
+}
+
+.chat-input-area button {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+}

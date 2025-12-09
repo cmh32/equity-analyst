@@ -50,6 +50,20 @@
                     <div id="reportContent" class="markdown-body">
                         <!-- Content goes here -->
                     </div>
+
+                    <!-- Chat Section -->
+                    <div id="chatSection" class="chat-section hidden">
+                        <div class="chat-header">
+                            <h3>Ask about this analysis</h3>
+                        </div>
+                        <div id="chatMessages" class="chat-messages">
+                            <!-- Messages will be injected here -->
+                        </div>
+                        <div class="chat-input-area">
+                            <input type="text" id="chatInput" placeholder="Ask a question about the analysis..." autocomplete="off">
+                            <button id="chatSendBtn" onclick="sendChatMessage()">Send</button>
+                        </div>
+                    </div>
                 </section>
             </div>
         </main>

@@ -11,6 +11,9 @@ def get_api_key(key_name):
     val = os.getenv(key_name)
     if not val:
         print(f"Warning: {key_name} not found in environment variables.")
+
+    if not val:
+        print(f"Warning: {key_name} not found in environment variables.")
     return val
 
 # Configuration Constants

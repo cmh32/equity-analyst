@@ -3,6 +3,7 @@ const TEST_MODE = false; // Set to false to use real API
 
 let currentData = null;
 let parsedSections = null;
+let chatHistory = [];
 
 // Mock data for testing without backend
 const MOCK_DATA = {
@@ -115,6 +116,7 @@ async function analyzeStock() {
 
         currentData = data;
         parsedSections = parseCIOSections(data.final_report);
+        chatHistory = []; // Reset chat history for new analysis
         renderDashboard(data, parsedSections);
 
     } catch (err) {
@@ -297,4 +299,97 @@ function showReport(title, content, activeElement) {
     // Remove ~~ markers entirely to prevent strikethrough rendering
     const sanitizedContent = content.replace(/~~/g, '');
     document.getElementById('reportContent').innerHTML = marked.parse(sanitizedContent);
+
+    // Show chat section
+    const chatSection = document.getElementById('chatSection');
+    chatSection.classList.remove('hidden');
 }
+
+/**
+ * Send a chat message and get RAG response
+ */
+async function sendChatMessage() {
+    const input = document.getElementById('chatInput');
+    const question = input.value.trim();
+
+    if (!question || !currentData) return;
+
+    const sendBtn = document.getElementById('chatSendBtn');
+
+    // Add user message to UI
+    appendChatMessage('user', question);
+    input.value = '';
+    sendBtn.disabled = true;
+
+    // Add to history
+    chatHistory.push({ role: 'user', content: question });
+
+    try {
+        if (TEST_MODE) {
+            // Mock response for testing
+            await new Promise(r => setTimeout(r, 500));
+            const mockResponse = `This is a mock response about ${currentData.ticker}. In production, this would use RAG to search the analysis.`;
+            appendChatMessage('assistant', mockResponse);
+            chatHistory.push({ role: 'assistant', content: mockResponse });
+        } else {
+            const response = await fetch(`${API_URL}/chat`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    ticker: currentData.ticker,
+                    question: question,
+                    history: chatHistory.slice(-6) // Send last 6 messages for context
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Chat Error: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            appendChatMessage('assistant', data.response);
+            chatHistory.push({ role: 'assistant', content: data.response });
+        }
+    } catch (err) {
+        appendChatMessage('assistant', `Error: ${err.message}`);
+    } finally {
+        sendBtn.disabled = false;
+        input.focus();
+    }
+}
+
+/**
+ * Append a message to the chat UI
+ */
+function appendChatMessage(role, content) {
+    const messagesDiv = document.getElementById('chatMessages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `chat-message ${role}`;
+
+    const labelSpan = document.createElement('span');
+    labelSpan.className = 'chat-label';
+    labelSpan.textContent = role === 'user' ? 'You' : 'AI';
+
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'chat-content';
+    contentDiv.innerHTML = marked.parse(content);
+
+    messageDiv.appendChild(labelSpan);
+    messageDiv.appendChild(contentDiv);
+    messagesDiv.appendChild(messageDiv);
+
+    // Scroll to bottom
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+// Allow Enter key to send chat
+document.addEventListener('DOMContentLoaded', () => {
+    const chatInput = document.getElementById('chatInput');
+    if (chatInput) {
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendChatMessage();
+            }
+        });
+    }
+});

@@ -1,5 +1,5 @@
 const API_URL = "http://localhost:8000";
-const TEST_MODE = true; // Set to false to use real API
+const TEST_MODE = false; // Set to false to use real API
 
 let currentData = null;
 let parsedSections = null;

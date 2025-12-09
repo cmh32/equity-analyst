@@ -71,12 +71,16 @@ To use the web-based dashboard and chat:
 
 *   `main.py`: Entry point of the application. Handles CLI args and kicks off the Crew.
 *   `src/`:
-    *   `crew.py`: Defines the Agents, Tasks, and Crew orchestration logic.
+    *   `api.py`: FastAPI server for the web interface and chat functionality.
+    *   `chat_service.py`: Implements the RAG-based chat feature for interacting with analysis reports.
+    *   `config.py`: Configuration settings (Model names, API keys, etc.).
     *   `etl.py`: Scripts for downloading and processing SEC 10-K filings.
-    *   `tools.py`: Custom tools for the agents (Browsing, YFinance, Technical Analysis, RAG).
-    *   `config.py`: Configuration settings (Model names, etc.).
-*   `downloads/`: Stores cached 10-K markdown files.
-*   `notes/`: Scratchpad for ideas.
+    *   `managed_crew.py`: Defines the agents, tasks, and overall crew orchestration logic.
+    *   `manager_agent.py`: Contains the logic for the Manager Agent, responsible for critiquing and ensuring output quality.
+    *   `mock_data.py`: Provides mock data for testing and development purposes.
+    *   `tools.py`: Custom tools for the agents (Web Browsing, YFinance, Technical Analysis, RAG).
+*   `downloads/`: Stores cached SEC 10-K markdown files.
+*   `notes/`: Contains scratchpad files (e.g., `ideas.txt`, `memo.txt`, `outputs.txt`) for project development and documentation.
 
 ## ⚠️ Disclaimer
 
